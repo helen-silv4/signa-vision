@@ -59,11 +59,34 @@ def encontra_coordenadas_maos(img, lado_invertido = False):
             
     return img, todas_maos        
 
+# função para verificar dedos levantados
+def dedos_levantados(mao):
+    dedos = []
+    
+    if mao['lado'] == 'Rigth':
+        if mao['coordenadas'][4][0] < mao['coordenadas'][3][0]:
+            dedos.append(True)
+        else:
+            dedos.append(False)
+    else:
+        if mao['coordenadas'][4][0] > mao['coordenadas'][3][0]:
+            dedos.append(True)
+        else:
+            dedos.append(False)
+    
+    for ponta_dedo in [8, 12, 16, 20]:
+        if mao['coordenadas'][ponta_dedo][1] < mao['coordenadas'][ponta_dedo - 2][1]:
+            dedos.append(True)
+        else:
+            dedos.append(False)
+        
+    return dedos
+
 while True:
     sucesso, img = webcam.read()
     img =  cv2.flip(img, 1)
     
-    img, todas_maos = encontra_coordenadas_maos(img)
+    img, todas_maos = encontra_coordenadas_maos(img)        
     
     cv2.imshow('SignaVision', img)
     
