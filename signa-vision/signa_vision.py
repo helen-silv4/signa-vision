@@ -17,9 +17,53 @@ webcam = cv2.VideoCapture(0)
 webcam.set(cv2.CAP_PROP_FRAME_WIDTH, resolucao_x)
 webcam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolucao_y)
 
+# função para encontrar as coordenadas
+def encontra_coordenadas_maos(img, lado_invertido = False):
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    resultado = maos.process(img_rgb)
+    
+    todas_maos = []
+    
+    if resultado.multi_hand_landmarks:
+        for lado_mao, pontos_maos in zip(resultado.multi_handedness, resultado.multi_hand_landmarks):
+            info_mao = {}
+            coordenadas = []
+
+            #print(pontos_maos)
+            
+            for ponto in pontos_maos.landmark:
+                coord_x = int(ponto.x * resolucao_x)
+                coord_y = int(ponto.x * resolucao_y)
+                coord_z = int(ponto.x * resolucao_x)
+                
+                coordenadas.append((coord_x, coord_y, coord_z))
+            
+            #print(coordenadas)
+            
+            info_mao['coordenadas'] = coordenadas
+            
+            #print(info_mao) 
+            
+            if lado_invertido:
+                if lado_mao.classification[0].label == 'Left':
+                    info_mao['lado'] = 'Right'
+                else: info_mao['lado'] = 'Left'
+            else:
+                info_mao['lado'] = lado_mao.classification[0].label
+                
+            todas_maos.append(info_mao)
+            
+            #print(todas_maos)
+            
+            mp_desenhos.draw_landmarks(img, pontos_maos, mp_maos.HAND_CONNECTIONS)
+            
+    return img, todas_maos        
+
 while True:
     sucesso, img = webcam.read()
     img =  cv2.flip(img, 1)
+    
+    img, todas_maos = encontra_coordenadas_maos(img)
     
     cv2.imshow('SignaVision', img)
     
