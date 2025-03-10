@@ -152,6 +152,13 @@ while True:
         
         # função para sobrepor uma imagem na outra
         img = cv2.addWeighted(img, 1, img_quadro, 0.2, 0)
+    
+    # fechamento do programa    
+    elif len(todas_maos) == 1:
+        info_dedos_mao1 = dedos_levantados(todas_maos[0])
+        if todas_maos[0]['lado'] == 'Right':
+            if info_dedos_mao1 == [False, True, False, False, True]:
+                break
                                  
     cv2.imshow('SignaVision', img)
     cv2.imshow('Quadro', img_quadro)
