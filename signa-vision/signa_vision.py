@@ -136,9 +136,28 @@ while True:
             espessura_pincel = 20
         else:
             espessura_pincel = 10
+            
+        # desenha na tela só se o indicador estiver levantado
+        if info_dedos_mao1 == [False, True, False, False, False]:
+            if x_quadro == 0 and y_quadro == 0: 
+               x_quadro, y_quadro = indicador_x, indicador_y 
+               
+            # desenha a linha   
+            cv2.line(img_quadro, (x_quadro, y_quadro), (indicador_x, indicador_y), cor_pincal, espessura_pincel)
+            
+            # atualiza as coordenadas do ponto inicial
+            x_quadro, y_quadro = indicador_x, indicador_y
+        else:
+            x_quadro, y_quadro = 0, 0 
+        
+        # função para sobrepor uma imagem na outra
+        img = cv2.addWeighted(img, 1, img_quadro, 0.2, 0)
                                  
     cv2.imshow('SignaVision', img)
+    cv2.imshow('Quadro', img_quadro)
     
     letra = cv2.waitKey(1)
     if letra == 27:
         break    
+
+cv2.imwrite('quadro.png', img_quadro)
