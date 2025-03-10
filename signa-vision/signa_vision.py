@@ -2,6 +2,9 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+from time import sleep
+from pynput.keyboard import Controller
+from pynput.keyboard import Key
 
 # detecção das mão e coordenadas
 mp_maos = mp.solutions.hands
@@ -30,6 +33,15 @@ img_quadro = np.ones((resolucao_y, resolucao_x, 3), np.uint8) * 255
 cor_pincal = (255, 0, 0)
 espessura_pincel = 7
 x_quadro, y_quadro = 0, 0
+teclas = [['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+          ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+          ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+          ['Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', ' ']]
+offset = 50
+tamanho_tecla = 50
+contador = 0
+texto = '>'
+teclado = Controller()
 
 # função para encontrar as coordenadas
 def encontra_coordenas_maos(img, lado_invertido = False):   
