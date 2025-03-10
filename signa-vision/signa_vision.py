@@ -103,9 +103,33 @@ while True:
     img = cv2.flip(img, 1)
     
     img, todas_maos = encontra_coordenas_maos(img)
-                            
+    
+    # verifica se há duas mãos levantadas
+    if len(todas_maos) == 2:       
+        info_dedos_mao1 = dedos_levantados(todas_maos[0])
+        info_dedos_mao2 = dedos_levantados(todas_maos[1]) 
+        
+        indicador_x, indicador_y, indicador_z = todas_maos[0]['coordenadas'][8] 
+        
+        # uma das mãos escolhe a cor do pincel
+        if sum(info_dedos_mao2) == 1:
+            cor_pincal = AZUL
+        elif sum(info_dedos_mao2) == 2:
+            cor_pincal = VERDE
+        elif sum(info_dedos_mao2) == 3:
+            cor_pincal = VERMELHO
+        elif sum(info_dedos_mao2) == 4:
+            cor_pincal = AZUL_CLARO
+        elif sum(info_dedos_mao2) == 5:
+            cor_pincal = BRANCO # borracha
+        else:
+            # caso a mão esteja fechada o quadro volta ao estado inicial
+            img_quadro = np.ones((resolucao_y, resolucao_x, 3), np.uint8) * 255 
+            
+        cv2.circle(img, (indicador_x, indicador_y), espessura_pincel, cor_pincal, cv2.FILLED) # pincel
+                                 
     cv2.imshow('SignaVision', img)
     
     letra = cv2.waitKey(1)
-    if letra == 27: 
-        break
+    if letra == 27:
+        break    
