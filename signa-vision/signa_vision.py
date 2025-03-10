@@ -17,7 +17,7 @@ webcam = cv2.VideoCapture(0)
 webcam.set(cv2.CAP_PROP_FRAME_WIDTH, resolucao_x)
 webcam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolucao_y)
 
-# constantes 
+# constantes
 BRANCO = (255, 255, 255)
 PRETO = (0, 0, 0)
 AZUL = (255, 0, 0)
@@ -32,8 +32,8 @@ espessura_pincel = 7
 x_quadro, y_quadro = 0, 0
 
 # função para encontrar as coordenadas
-def encontra_coordenadas_maos(img, lado_invertido = False):
-    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+def encontra_coordenas_maos(img, lado_invertido = False):   
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) 
     resultado = maos.process(img_rgb)
     
     todas_maos = []
@@ -41,43 +41,45 @@ def encontra_coordenadas_maos(img, lado_invertido = False):
     if resultado.multi_hand_landmarks:
         for lado_mao, pontos_maos in zip(resultado.multi_handedness, resultado.multi_hand_landmarks):
             info_mao = {}
+            
             coordenadas = []
-
+            
             #print(pontos_maos)
             
             for ponto in pontos_maos.landmark:
                 coord_x = int(ponto.x * resolucao_x)
-                coord_y = int(ponto.x * resolucao_y)
-                coord_z = int(ponto.x * resolucao_x)
+                coord_y = int(ponto.y * resolucao_y)
+                coord_z = int(ponto.z * resolucao_x)
+                
+                #print(coord_x, coord_y, coord_z)
                 
                 coordenadas.append((coord_x, coord_y, coord_z))
-            
+                
             #print(coordenadas)
-            
-            info_mao['coordenadas'] = coordenadas
-            
-            #print(info_mao) 
+                
+            info_mao['coordenadas'] = coordenadas   
             
             if lado_invertido:
                 if lado_mao.classification[0].label == 'Left':
                     info_mao['lado'] = 'Right'
-                else: info_mao['lado'] = 'Left'
-            else:
+                else: 
+                    info_mao['lado'] = 'Left'
+            else: 
                 info_mao['lado'] = lado_mao.classification[0].label
-                
+            
             todas_maos.append(info_mao)
             
             #print(todas_maos)
+           
+            mp_desenhos.draw_landmarks(img, pontos_maos, mp_maos.HAND_CONNECTIONS) 
             
-            mp_desenhos.draw_landmarks(img, pontos_maos, mp_maos.HAND_CONNECTIONS)
-            
-    return img, todas_maos        
+    return img, todas_maos
 
 # função para verificar dedos levantados
 def dedos_levantados(mao):
     dedos = []
     
-    if mao['lado'] == 'Rigth':
+    if mao['lado'] == 'Right':
         if mao['coordenadas'][4][0] < mao['coordenadas'][3][0]:
             dedos.append(True)
         else:
@@ -87,23 +89,23 @@ def dedos_levantados(mao):
             dedos.append(True)
         else:
             dedos.append(False)
-    
+        
     for ponta_dedo in [8, 12, 16, 20]:
         if mao['coordenadas'][ponta_dedo][1] < mao['coordenadas'][ponta_dedo - 2][1]:
             dedos.append(True)
         else:
             dedos.append(False)
-        
+    
     return dedos
-
+    
 while True:
     sucesso, img = webcam.read()
-    img =  cv2.flip(img, 1)
+    img = cv2.flip(img, 1)
     
-    img, todas_maos = encontra_coordenadas_maos(img)        
-    
+    img, todas_maos = encontra_coordenas_maos(img)
+                            
     cv2.imshow('SignaVision', img)
     
     letra = cv2.waitKey(1)
-    if letra == 27:
+    if letra == 27: 
         break
