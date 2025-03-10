@@ -17,6 +17,20 @@ webcam = cv2.VideoCapture(0)
 webcam.set(cv2.CAP_PROP_FRAME_WIDTH, resolucao_x)
 webcam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolucao_y)
 
+# constantes 
+BRANCO = (255, 255, 255)
+PRETO = (0, 0, 0)
+AZUL = (255, 0, 0)
+VERDE = (0, 255, 0)
+VERMELHO = (0, 0, 255)
+AZUL_CLARO = (255, 255, 0)
+
+# variáveis
+img_quadro = np.ones((resolucao_y, resolucao_x, 3), np.uint8) * 255
+cor_pincal = (255, 0, 0)
+espessura_pincel = 7
+x_quadro, y_quadro = 0, 0
+
 # função para encontrar as coordenadas
 def encontra_coordenadas_maos(img, lado_invertido = False):
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
