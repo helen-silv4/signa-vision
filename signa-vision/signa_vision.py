@@ -5,6 +5,7 @@ import numpy as np
 from time import sleep
 from pynput.keyboard import Controller
 from pynput.keyboard import Key
+import os
 
 # detecção das mão e coordenadas
 mp_maos = mp.solutions.hands
@@ -42,6 +43,7 @@ tamanho_tecla = 50
 contador = 0
 texto = '>'
 teclado = Controller()
+bloco_notas = False
 
 # função para encontrar as coordenadas
 def encontra_coordenas_maos(img, lado_invertido = False):   
@@ -123,12 +125,61 @@ while True:
     
     img, todas_maos = encontra_coordenas_maos(img)
     
-    # fechamento do programa    
     if len(todas_maos) == 1:
         info_dedos_mao1 = dedos_levantados(todas_maos[0])
         if todas_maos[0]['lado'] == 'Right':
-            if info_dedos_mao1 == [False, True, False, False, True]:
-                break
+            if info_dedos_mao1 == [False, True, False, False, True]: # fechamento do programa
+               break
+            
+            if info_dedos_mao1 == [False, True, True, False, False] and bloco_notas == False:
+                bloco_notas = True
+                os.startfile(r'C:\Windows\system32\notepad.exe')
+            elif info_dedos_mao1 == [False, False, False, False, False] and bloco_notas == True:
+                bloco_notas = False
+                os.system('TASKKILL /IM notepad.exe')
+                
+        elif todas_maos[0]['lado'] == 'Left':
+            indicador_x, indicador_y, indicador_z = todas_maos[0]['coordenadas'][8]
+            
+            cv2.putText(img, f'Distancia webcam: {indicador_z}', (850, 50), cv2.QT_FONT_NORMAL, 1, BRANCO, 2)
+
+            for indice_linha, linha_teclado in enumerate(teclas):
+                for indice_coluna, letra in enumerate(linha_teclado):
+                    if sum(info_dedos_mao1) <= 1:
+                        letra = letra.lower()
+                    img = imprime_botoes(img, (offset + (indice_coluna*(tamanho_tecla+30)), offset+(indice_linha*(tamanho_tecla+30))), letra, tamanho_tecla)
+                    
+                    # verifica se o dedo indicador está posicionado dentro da área da tecla 
+                    if offset + (indice_coluna*(tamanho_tecla+30)) < indicador_x < 100+(indice_coluna*(tamanho_tecla+30)) and offset+(indice_linha*(tamanho_tecla+30)) < indicador_y < 100+(indice_linha*(tamanho_tecla+30)):
+                        img = imprime_botoes(img, (offset + (indice_coluna*(tamanho_tecla+30)), offset+(indice_linha*(tamanho_tecla+30))), letra, tamanho_tecla, cor_retangulo = VERDE) 
+                        if indicador_z < -85:
+                            contador = 1
+                            escreve = letra
+                            img = imprime_botoes(img, (offset + (indice_coluna*(tamanho_tecla+30)), offset+(indice_linha*(tamanho_tecla+30))), letra, tamanho_tecla, cor_retangulo = AZUL_CLARO)     
+            
+            # o texto só é escrito quando o dedo for retirado e o contador retorne ao valor 0
+            if contador:
+                contador += 1
+                if contador == 3:
+                    texto += escreve 
+                    contador = 0 
+                    # comando para digitar no em qualquer programa do computador
+                    teclado.press(escreve)
+            
+            # apagar letra com o dedo mindinho        
+            if info_dedos_mao1 == [False, False, False, False, True] and len(texto) > 1:
+               texto = texto[:-1] # apaga o último digito
+               teclado.press(Key.backspace) # apaga com a tecla backspace do teclado em qualquer outro programa
+               sleep(0.15)
+                   
+            # mostrar texto na tela        
+            cv2.rectangle(img, (offset, 450), (830, 500), BRANCO, cv2.FILLED) # retangulo
+            cv2.rectangle(img, (offset, 450), (830, 500), AZUL, 1) # borda
+            cv2.putText(img, texto[-40:], (offset, 480), cv2.QT_FONT_NORMAL, 1, PRETO, 2) # texto
+            
+            # circulo sobreposto
+            cv2.circle(img, (indicador_x, indicador_y), 7, AZUL, cv2.FILLED)
+                
     # verifica se há duas mãos levantadas
     elif len(todas_maos) == 2:       
         info_dedos_mao1 = dedos_levantados(todas_maos[0])
@@ -186,3 +237,7 @@ while True:
         break    
 
 cv2.imwrite('quadro.png', img_quadro)
+
+# armazenando o texto digitado em um arquivo    
+with open ('texto.txt', 'w') as arquivo:
+    arquivo.write(texto)
