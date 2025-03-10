@@ -123,8 +123,14 @@ while True:
     
     img, todas_maos = encontra_coordenas_maos(img)
     
+    # fechamento do programa    
+    if len(todas_maos) == 1:
+        info_dedos_mao1 = dedos_levantados(todas_maos[0])
+        if todas_maos[0]['lado'] == 'Right':
+            if info_dedos_mao1 == [False, True, False, False, True]:
+                break
     # verifica se há duas mãos levantadas
-    if len(todas_maos) == 2:       
+    elif len(todas_maos) == 2:       
         info_dedos_mao1 = dedos_levantados(todas_maos[0])
         info_dedos_mao2 = dedos_levantados(todas_maos[1]) 
         
@@ -171,14 +177,7 @@ while True:
         
         # função para sobrepor uma imagem na outra
         img = cv2.addWeighted(img, 1, img_quadro, 0.2, 0)
-    
-    # fechamento do programa    
-    elif len(todas_maos) == 1:
-        info_dedos_mao1 = dedos_levantados(todas_maos[0])
-        if todas_maos[0]['lado'] == 'Right':
-            if info_dedos_mao1 == [False, True, False, False, True]:
-                break
-                                 
+                    
     cv2.imshow('SignaVision', img)
     cv2.imshow('Quadro', img_quadro)
     
