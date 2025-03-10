@@ -127,6 +127,15 @@ while True:
             img_quadro = np.ones((resolucao_y, resolucao_x, 3), np.uint8) * 255 
             
         cv2.circle(img, (indicador_x, indicador_y), espessura_pincel, cor_pincal, cv2.FILLED) # pincel
+        
+        # espessura do pincel com base na distância
+        espessura_pincel = (int(abs(indicador_z)) // 3) + 5
+        if indicador_z < -40:
+            espessura_pincel = 30
+        elif indicador_z <= -30:
+            espessura_pincel = 20
+        else:
+            espessura_pincel = 10
                                  
     cv2.imshow('SignaVision', img)
     
