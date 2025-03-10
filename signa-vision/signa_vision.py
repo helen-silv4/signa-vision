@@ -109,7 +109,14 @@ def dedos_levantados(mao):
             dedos.append(False)
     
     return dedos
+
+# função para imprimir os botões do teclado    
+def imprime_botoes(img, posicao, letra, tamanho, cor_retangulo = BRANCO):
+    cv2.rectangle(img, posicao, (posicao[0]+tamanho, posicao[1]+tamanho), cor_retangulo, cv2.FILLED) # retangulo
+    cv2.rectangle(img, posicao, (posicao[0]+tamanho, posicao[1]+tamanho), AZUL, 1) # borda
+    cv2.putText(img, letra, (posicao[0]+15, posicao[1]+30), cv2.QT_FONT_NORMAL, 1, PRETO, 2) # letra
     
+    return img    
 while True:
     sucesso, img = webcam.read()
     img = cv2.flip(img, 1)
