@@ -51,8 +51,18 @@ Crie um ambiente virtual para isolar as bibliotecas do projeto e evitar conflito
 python -m venv venv
 ```
 Depois, abra o **VS Code**, pressione `Ctrl + Shift + P`, digite **Python: Select Interpreter**, e selecione o ambiente virtual `venv` que foi criado.
+Em seguida, ative o ambiente virtual no terminal do **VS Code** com o seguinte comando:
+```bash
+.\venv\Scripts\Activate
+```
 
 ### 5️⃣ Instalando Dependências
+Instale a versão mais recente do pip, o gerenciador de pacotes do Python, com o seguinte comando:
+```bash
+python -m pip install --upgrade pip
+```
+Manter o `pip` atualizado garante compatibilidade com as versões mais recentes de pacotes e corrige possíveis falhas de segurança ou erros na instalação de dependências.
+
 No terminal do **VS Code**, instale as bibliotecas necessárias:
 ```bash
 pip install opencv-python
