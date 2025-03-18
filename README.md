@@ -22,7 +22,7 @@ Para instalar o **Git LFS**, siga os passos conforme seu sistema operacional:
   brew install git-lfs
   ```
 - **Windows**:
-  Baixe e instale o [Git LFS](https://git-lfs.github.com/)<br><br>
+  Baixe e instale o [Git LFS](https://git-lfs.github.com/)
   
 ### 2️⃣ Configurando o Git LFS
 
@@ -30,7 +30,6 @@ Se ainda não configurou o **Git LFS**, execute o seguinte comando:
 ```bash
 git lfs install
 ```
-<br>
 
 
 ### 3️⃣ Clonando o Repositório
@@ -44,7 +43,6 @@ Se os arquivos rastreados pelo Git LFS não forem baixados automaticamente, exec
 ```bash
 git lfs pull
 ```
-<br>
 
 ### 4️⃣ Criando e selecionando um Ambiente Virtual
 
@@ -52,7 +50,7 @@ Crie um ambiente virtual para isolar as bibliotecas do projeto e evitar conflito
 ```bash
 python -m venv venv
 ```
-Depois, abra o **VS Code**, pressione `Ctrl + Shift + P`, digite **Python: Select Interpreter**, e selecione o ambiente virtual `venv` que foi criado.<br><br>
+Depois, abra o **VS Code**, pressione `Ctrl + Shift + P`, digite **Python: Select Interpreter**, e selecione o ambiente virtual `venv` que foi criado.
 
 ### 5️⃣ Instalando Dependências
 No terminal do **VS Code**, instale as bibliotecas necessárias:
@@ -61,12 +59,6 @@ pip install opencv-python
 pip install mediapipe
 pip install pynput
 ```
-
-Se houver um arquivo `requirements.txt`, instale todas as dependências adicionais:
-```bash
-pip install -r requirements.txt
-```
-<br>
 
 ### 6️⃣ Pronto! 🎉
 Agora você pode executar o projeto sem problemas. Caso tenha dúvidas, abra uma *issue* no repositório.
