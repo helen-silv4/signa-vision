@@ -72,3 +72,7 @@ pip install pynput
 
 ### 6️⃣ Pronto! 🎉
 Agora você pode executar o projeto sem problemas. Caso tenha dúvidas, abra uma *issue* no repositório.
+
+### 🔗 Tutorial
+Se precisar de ajuda para baixar o projeto, assista ao tutorial:
+[Clonando repositório com suporte a Git LFS - SignaVisio](https://www.youtube.com/watch?v=TsR0uWyvNdk)
