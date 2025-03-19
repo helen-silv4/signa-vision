@@ -50,7 +50,7 @@ Crie um ambiente virtual para isolar as bibliotecas do projeto e evitar conflito
 ```bash
 python -m venv venv
 ```
-Depois, abra o **VS Code**, pressione `Ctrl + Shift + P`, digite **Python: Select Interpreter**, e selecione o ambiente virtual `venv` que foi criado.
+Depois, abra o **VS Code**, pressione `Ctrl + Shift + P`, digite **Python: Select Interpreter**, e selecione o ambiente virtual `venv` que foi criado.<br>
 Em seguida, ative o ambiente virtual no terminal do **VS Code** com o seguinte comando:
 ```bash
 .\venv\Scripts\Activate
@@ -75,4 +75,4 @@ Agora você pode executar o projeto sem problemas. Caso tenha dúvidas, abra uma
 
 ### 🔗 Tutorial
 Se precisar de ajuda para baixar o projeto, assista ao tutorial:
-[Clonando repositório com suporte a Git LFS - SignaVisio](https://www.youtube.com/watch?v=TsR0uWyvNdk)
+[Clonando repositório com suporte a Git LFS - SignaVision](https://www.youtube.com/watch?v=TsR0uWyvNdk)
