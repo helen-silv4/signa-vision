@@ -28,6 +28,7 @@ AZUL = (255, 0, 0)
 VERDE = (0, 255, 0)
 VERMELHO = (0, 0, 255)
 AZUL_CLARO = (255, 255, 0)
+CINZA = (192, 192, 192)
 
 # variáveis
 img_quadro = np.ones((resolucao_y, resolucao_x, 3), np.uint8) * 255
@@ -115,7 +116,7 @@ def dedos_levantados(mao):
 # função para imprimir os botões do teclado    
 def imprime_botoes(img, posicao, letra, tamanho, cor_retangulo = BRANCO):
     cv2.rectangle(img, posicao, (posicao[0]+tamanho, posicao[1]+tamanho), cor_retangulo, cv2.FILLED) # retangulo
-    cv2.rectangle(img, posicao, (posicao[0]+tamanho, posicao[1]+tamanho), AZUL, 1) # borda
+    cv2.rectangle(img, posicao, (posicao[0]+tamanho, posicao[1]+tamanho), PRETO, 1) # borda
     cv2.putText(img, letra, (posicao[0]+15, posicao[1]+30), cv2.QT_FONT_NORMAL, 1, PRETO, 2) # letra
     
     return img    
@@ -141,7 +142,7 @@ while True:
         elif todas_maos[0]['lado'] == 'Left':
             indicador_x, indicador_y, indicador_z = todas_maos[0]['coordenadas'][8]
             
-            cv2.putText(img, f'Distancia webcam: {indicador_z}', (850, 50), cv2.QT_FONT_NORMAL, 1, BRANCO, 2)
+            cv2.putText(img, f'Distancia webcam: {indicador_z}', (850, 50), cv2.QT_FONT_NORMAL, 1, PRETO, 2)
 
             for indice_linha, linha_teclado in enumerate(teclas):
                 for indice_coluna, letra in enumerate(linha_teclado):
@@ -151,11 +152,11 @@ while True:
                     
                     # verifica se o dedo indicador está posicionado dentro da área da tecla 
                     if offset + (indice_coluna*(tamanho_tecla+30)) < indicador_x < 100+(indice_coluna*(tamanho_tecla+30)) and offset+(indice_linha*(tamanho_tecla+30)) < indicador_y < 100+(indice_linha*(tamanho_tecla+30)):
-                        img = imprime_botoes(img, (offset + (indice_coluna*(tamanho_tecla+30)), offset+(indice_linha*(tamanho_tecla+30))), letra, tamanho_tecla, cor_retangulo = VERDE) 
+                        img = imprime_botoes(img, (offset + (indice_coluna*(tamanho_tecla+30)), offset+(indice_linha*(tamanho_tecla+30))), letra, tamanho_tecla, cor_retangulo = CINZA) 
                         if indicador_z < -85:
                             contador = 1
                             escreve = letra
-                            img = imprime_botoes(img, (offset + (indice_coluna*(tamanho_tecla+30)), offset+(indice_linha*(tamanho_tecla+30))), letra, tamanho_tecla, cor_retangulo = AZUL_CLARO)     
+                            img = imprime_botoes(img, (offset + (indice_coluna*(tamanho_tecla+30)), offset+(indice_linha*(tamanho_tecla+30))), letra, tamanho_tecla, cor_retangulo = VERDE)     
             
             # o texto só é escrito quando o dedo for retirado e o contador retorne ao valor 0
             if contador:
@@ -174,7 +175,7 @@ while True:
                    
             # mostrar texto na tela        
             cv2.rectangle(img, (offset, 450), (830, 500), BRANCO, cv2.FILLED) # retangulo
-            cv2.rectangle(img, (offset, 450), (830, 500), AZUL, 1) # borda
+            cv2.rectangle(img, (offset, 450), (830, 500), PRETO, 1) # borda
             cv2.putText(img, texto[-40:], (offset, 480), cv2.QT_FONT_NORMAL, 1, PRETO, 2) # texto
             
             # circulo sobreposto
@@ -182,29 +183,40 @@ while True:
                 
     # verifica se há duas mãos levantadas
     elif len(todas_maos) == 2:       
-        info_dedos_mao1 = dedos_levantados(todas_maos[0])
-        info_dedos_mao2 = dedos_levantados(todas_maos[1]) 
-        
-        indicador_x, indicador_y, indicador_z = todas_maos[0]['coordenadas'][8] 
-        
-        # uma das mãos escolhe a cor do pincel
-        if sum(info_dedos_mao2) == 1:
-            cor_pincal = AZUL
-        elif sum(info_dedos_mao2) == 2:
-            cor_pincal = VERDE
-        elif sum(info_dedos_mao2) == 3:
+        # determina qual é a mão esquerda e qual é a mão direita
+        if todas_maos[0]['lado'] == 'Left':
+            mao_esquerda = todas_maos[0]
+            mao_direita = todas_maos[1]
+        else:
+            mao_esquerda = todas_maos[1]
+            mao_direita = todas_maos[0]
+
+        # verifica quais dedos estão levantados em cada mão
+        info_dedos_esquerda = dedos_levantados(mao_esquerda)
+        info_dedos_direita = dedos_levantados(mao_direita)
+
+        # a mão esquerda define a cor do pincel
+        if sum(info_dedos_esquerda) == 1:
             cor_pincal = VERMELHO
-        elif sum(info_dedos_mao2) == 4:
-            cor_pincal = AZUL_CLARO
-        elif sum(info_dedos_mao2) == 5:
-            cor_pincal = BRANCO # borracha
+        elif sum(info_dedos_esquerda) == 2:
+            cor_pincal = VERDE
+        elif sum(info_dedos_esquerda) == 3:
+            cor_pincal = AZUL
+        elif sum(info_dedos_esquerda) == 4:
+            cor_pincal = PRETO
+        elif sum(info_dedos_esquerda) == 5:
+            cor_pincal = BRANCO  # borracha
         else:
             # caso a mão esteja fechada o quadro volta ao estado inicial
             img_quadro = np.ones((resolucao_y, resolucao_x, 3), np.uint8) * 255 
-            
-        cv2.circle(img, (indicador_x, indicador_y), espessura_pincel, cor_pincal, cv2.FILLED) # pincel
         
-        # espessura do pincel com base na distância
+        # posição do indicador da mão direita
+        indicador_x, indicador_y, indicador_z = mao_direita['coordenadas'][8]
+
+        # circulo do pincel
+        cv2.circle(img, (indicador_x, indicador_y), espessura_pincel, cor_pincal, cv2.FILLED)  
+
+        # ajustar espessura do pincel com base na distância
         espessura_pincel = (int(abs(indicador_z)) // 3) + 5
         if indicador_z < -40:
             espessura_pincel = 30
@@ -212,25 +224,25 @@ while True:
             espessura_pincel = 20
         else:
             espessura_pincel = 10
-            
-        # desenha na tela só se o indicador estiver levantado
-        if info_dedos_mao1 == [False, True, False, False, False]:
+
+        # a mão direita desenha se o indicador estiver levantado
+        if info_dedos_direita == [False, True, False, False, False]:
             if x_quadro == 0 and y_quadro == 0: 
-               x_quadro, y_quadro = indicador_x, indicador_y 
-               
+                x_quadro, y_quadro = indicador_x, indicador_y 
+            
             # desenha a linha   
             cv2.line(img_quadro, (x_quadro, y_quadro), (indicador_x, indicador_y), cor_pincal, espessura_pincel)
-            
+
             # atualiza as coordenadas do ponto inicial
             x_quadro, y_quadro = indicador_x, indicador_y
         else:
-            x_quadro, y_quadro = 0, 0 
-        
-        # função para sobrepor uma imagem na outra
+            x_quadro, y_quadro = 0, 0  
+
+        # sobrepor a imagem do quadro na imagem da webcam
         img = cv2.addWeighted(img, 1, img_quadro, 0.2, 0)
                     
     cv2.imshow('SignaVision', img)
-    cv2.imshow('Quadro', img_quadro)
+    #cv2.imshow('Quadro', img_quadro)
     
     letra = cv2.waitKey(1)
     if letra == 27:
