@@ -1,6 +1,6 @@
 ## 📝 Manual do Usuário - Signa Vision
 
-O **Signa Vision** é um software inovador que permite a interação com o computador através de gestos das mãos. Este manual fornecerá instruções detalhadas sobre como utilizar as funcionalidades de **teclado virtual** e **desenho**.
+O **SignaVision** é um software de rastreamento de mãos que mapeia pontos de coordenadas em tempo real, possibilitando a interação com o computador por meio de gestos, incluindo funcionalidades como **teclado virtual** e **desenho**.
 
 ### 🌟 **Funcionalidades**
 
